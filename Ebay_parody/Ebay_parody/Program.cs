@@ -8,7 +8,8 @@ using MySql.Data.MySqlClient;
 namespace Ebay_parody {
     class Program {
         static void Main(string[] args) {
-            string cs = @"server=localhost;
+            /*
+             string cs = @"server=localhost;
                         userid=root;
                         password=;
                         database=csharp";
@@ -25,6 +26,8 @@ namespace Ebay_parody {
             Console.ReadKey();
             Console.WriteLine($"MySQL version : {con.ServerVersion}");
             Console.ReadKey();
+            */
+            User.Authentication();
         }
     }
 }
