@@ -17,3 +17,8 @@ C:\Users\Fleksis\Desktop\Ebay_parody\Ebay_parody\Ebay_parody\obj\Debug\Ebay_paro
 C:\Users\Fleksis\Desktop\Ebay_parody\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.csproj.CopyComplete
 C:\Users\Fleksis\Desktop\Ebay_parody\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.exe
 C:\Users\Fleksis\Desktop\Ebay_parody\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.pdb
+C:\Users\Fleksis\Desktop\marketplace\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.csprojAssemblyReference.cache
+C:\Users\Fleksis\Desktop\marketplace\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.exe.config
+C:\Users\Fleksis\Desktop\marketplace\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.csproj.CoreCompileInputs.cache
+C:\Users\Fleksis\Desktop\marketplace\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.exe
+C:\Users\Fleksis\Desktop\marketplace\Ebay_parody\Ebay_parody\obj\Debug\Ebay_parody.pdb
