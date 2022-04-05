@@ -8,6 +8,7 @@ class User {
     private int ID;
     private string firstname;
     private string surname;
+    private string email;
     private decimal balance;
     private int productForSale; //CHANGE(list)
 
@@ -32,24 +33,38 @@ class User {
     }
 
     public static void Authentication() {
-        string AuthenticationMenu = string.Format("{0,-15}", "+ - - - - - - +\n");
-        AuthenticationMenu += string.Format("{0, 0} {1,-11}", "|", "1. Login    |\n");
-        AuthenticationMenu += string.Format("{0,-15}", "+ - - - - - - +\n\n");
+        string LoginMenu = string.Format("{0,-15}", "+ - - - - - - +\n");
+        LoginMenu += string.Format("{0, 0} {1,-11}", "|", "1. Login    |\n");
+        LoginMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
 
-        AuthenticationMenu += string.Format("{0,-15}",  "+ - - - - - - +\n");
-        AuthenticationMenu += string.Format("{0, 0} {1,-11}", "|", "2. Register |\n");
-        AuthenticationMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
-        Console.WriteLine(AuthenticationMenu);
+        string RegisterMenu = string.Format("{0,-15}",  "+ - - - - - - +\n");
+        RegisterMenu += string.Format("{0, 0} {1,-11}", "|", "2. Register |\n");
+        RegisterMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
+        Console.WriteLine(LoginMenu);
+        Console.WriteLine(RegisterMenu);
 
         Console.Write("Choose authentication method: ");
-        int cursor = Convert.ToInt32(Console.ReadLine());
+        string cursor = Console.ReadLine();
+        Console.WriteLine(cursor);
+
+        while (cursor != "1" || cursor != "2") {
+            if (cursor != "1" || cursor != "2") {
+                Console.WriteLine("Incorrect input, try again!");
+                Console.Write("Choose authentication method: ");
+                cursor = Console.ReadLine();
+                continue;
+            } else {
+                break;
+            }
+        }
+
         Console.Clear();
 
         switch (cursor) {
-            case 1:
+            case "1":
                 User.Login();
                 break;
-            case 2:
+            case "2":
                 User.Register();
                 break;
             default:
@@ -58,6 +73,25 @@ class User {
                 Environment.Exit(0);
                 break;
         }     
+    }
+
+    private static string PasswordHider() {
+        var pass = string.Empty;
+
+        ConsoleKey key;
+        do {
+            var keyInfo = Console.ReadKey(intercept: true);
+            key = keyInfo.Key;
+
+            if (key == ConsoleKey.Backspace && pass.Length > 0) { //need some rework with backsapce
+                Console.Write("\b \b");
+                pass = pass.Remove(pass.Length - 1, 1);
+            } else if (!char.IsControl(keyInfo.KeyChar)) {
+                Console.Write("*");
+                pass += keyInfo.KeyChar;
+            }
+        } while (key != ConsoleKey.Enter);
+        return pass;
     }
 
     public static void Login() {
@@ -71,21 +105,9 @@ class User {
         string Firstname = Console.ReadLine();
 
         Console.Write("Password: ");
-        var pass = string.Empty;
+        string pass = User.PasswordHider();
 
-        ConsoleKey key;
-        do {
-            var keyInfo = Console.ReadKey(intercept: true);
-            key = keyInfo.Key;
 
-            if (key == ConsoleKey.Backspace && pass.Length > 0) { //need some rework with backsapce
-                Console.Write("\b \b");
-                //pass = "";
-            } else if (!char.IsControl(keyInfo.KeyChar)) {
-                Console.Write("*");
-                pass += keyInfo.KeyChar;
-            }
-        } while (key != ConsoleKey.Enter);
 
         //Console.WriteLine($"\nPass is {pass}"); //debug
 
@@ -93,6 +115,12 @@ class User {
     }
 
     public static void Register() {
+        string RegisterMenu = string.Format("{0,-15}", "+ - - - - - - +\n");
+        RegisterMenu += string.Format("{0, 0} {1,-11}", "|", "1. Register sd|\n");
+        RegisterMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
+        Console.WriteLine(RegisterMenu);
 
+
+        Console.ReadKey();
     }
 }
