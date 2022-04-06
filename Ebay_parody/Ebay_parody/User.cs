@@ -12,6 +12,10 @@ class User {
     private decimal balance;
     private int productForSale; //CHANGE(list)
 
+    public int IDs {
+        get { return ID; }
+    }
+
     public string Firstname {
         get { return firstname; }
         set { firstname = value; }
@@ -37,35 +41,20 @@ class User {
         set { productForSale = value; }
     }
 
-    public static void Authentication() {
-        string LoginMenu = string.Format("{0,-15}", "+ - - - - - - +\n");
-        LoginMenu += string.Format("{0, 0} {1,-11}", "|", "1. Login    |\n");
-        LoginMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
+    public static void CreateButtonList(string[] titles) {
+        for (int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
+            string button = string.Format("{0,-15}", "+ - - - - - - +\n");
+            button += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{serialNumber + 1}. {titles[serialNumber]}", "|\n");
+            button += string.Format("{0,-15}", "+ - - - - - - +\n");
+            Console.WriteLine(button);
+        }
+    }
 
-        string RegisterMenu = string.Format("{0,-15}",  "+ - - - - - - +\n");
-        RegisterMenu += string.Format("{0, 0} {1,-11}", "|", "2. Register |\n");
-        RegisterMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
-        Console.WriteLine(LoginMenu);
-        Console.WriteLine(RegisterMenu);
-
-        Console.Write("Choose authentication method: ");
-        string Cursor = Console.ReadLine();
-
-        Console.Clear();
-
-        switch (Cursor) {
-            case "1":
-                User.Login(ref LoginMenu);
-                break;
-            case "2":
-                User.Register(ref RegisterMenu);
-                break;
-            default:
-                Console.WriteLine("Not correct input...");
-                Console.ReadKey();
-                Environment.Exit(0); //Varbūt while ciklā ielikt, lai lietotājs atkārtoti vada skaitli
-                break;
-        }     
+    public static string CreateTitle(string titleName) {
+        string title = string.Format("{0,-15}", "+ - - - - - - +\n");
+        title += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{titleName}", "|\n");
+        title += string.Format("{0,-15}", "+ - - - - - - +\n");
+        return title;
     }
 
     private static string PasswordHider() {
@@ -76,7 +65,7 @@ class User {
             var keyInfo = Console.ReadKey(intercept: true);
             key = keyInfo.Key;
 
-            if (key == ConsoleKey.Backspace && pass.Length > 0) { //need some rework with backsapce
+            if (key == ConsoleKey.Backspace && pass.Length > 0) {
                 Console.Write("\b \b");
                 pass = pass.Remove(pass.Length - 1, 1);
             } else if (!char.IsControl(keyInfo.KeyChar)) {
@@ -88,8 +77,8 @@ class User {
         return pass;
     }
 
-    public static void Login(ref string LoginMenu) {
-        Console.WriteLine(LoginMenu);
+    public static void Login(string title) {
+        Console.WriteLine(title);
 
         Console.Write("Firstname: ");
         string Firstname = Console.ReadLine();
@@ -100,8 +89,8 @@ class User {
         Console.ReadKey();
     }
 
-    public static void Register(ref string RegisterMenu) {
-        Console.WriteLine(RegisterMenu);
+    public static void Register(string title) {
+        Console.WriteLine(title);
 
         Console.Write("Firstname: ");
         string Firstname = Console.ReadLine();
@@ -122,7 +111,7 @@ class User {
         newUser.Balance = 0;
 
 
-        Console.WriteLine($"Firstname {newUser.Firstname}\nLastame {newUser.Lastname}\nEmail {newUser.Email}"); //debug
+        Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
 
         Console.ReadKey();
     }

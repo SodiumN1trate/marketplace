@@ -27,7 +27,30 @@ namespace Ebay_parody {
             Console.WriteLine($"MySQL version : {con.ServerVersion}");
             Console.ReadKey();
             */
-            User.Authentication();
+
+            string[] titles = {"Login", "Register"};
+            bool isCursorCorrect = false;
+            while (isCursorCorrect != true) {
+                User.CreateButtonList(titles);
+                Console.Write("Choose authentication method: ");
+                string Cursor = Console.ReadLine();
+
+                Console.Clear();
+                switch (Cursor) {
+                    case "1":
+                        User.Login(User.CreateTitle(titles[0]));
+                        isCursorCorrect = true;
+                        break;
+                    case "2":
+                        User.Register(User.CreateTitle(titles[1]));
+                        isCursorCorrect = true;
+                        break;
+                    default:
+                        Console.WriteLine("Not correct input...");
+                        Console.Clear();
+                        break;
+                }
+            } 
         }
     }
 }
