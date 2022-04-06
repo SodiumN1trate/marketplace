@@ -9,10 +9,10 @@ namespace Ebay_parody {
     class Program {
         static void Main(string[] args) {
             /*
-             string cs = @"server=localhost;
-                        userid=root;
-                        password=;
-                        database=csharp";
+            string cs = @"server=90.139.159.117;
+                        userid=test;
+                        password=123;
+                        database=marketplace";
 
             var con = new MySqlConnection(cs);
             con.Open();
@@ -20,29 +20,33 @@ namespace Ebay_parody {
             var cmd = new MySqlCommand();
             cmd.Connection = con;
 
-            cmd.CommandText = @"CREATE TABLE user(id INTEGER PRIMARY KEY AUTO_INCREMENT, firstname TEXT, lastname INT)";
-            cmd.ExecuteNonQuery();
+            cmd.CommandText = @"SELECT * FROM user";
+            MySqlDataReader rdr = cmd.ExecuteReader();
 
-            Console.ReadKey();
-            Console.WriteLine($"MySQL version : {con.ServerVersion}");
-            Console.ReadKey();
+            while (rdr.Read()) {
+                Console.WriteLine("{0} {1} {2} {3} {4}", rdr.GetInt32(0), rdr.GetString(1),
+                        rdr.GetString(2), rdr.GetString(3), rdr.GetInt32(4));
+            }
             */
+
 
             string[] titles = {"Login", "Register"};
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
-                User.CreateButtonList(titles);
+                User.CreateButtonList(" ", titles);
                 Console.Write("Choose authentication method: ");
-                string Cursor = Console.ReadLine();
+                string cursor = Console.ReadLine();
 
                 Console.Clear();
-                switch (Cursor) {
+                switch (cursor) {
                     case "1":
-                        User.Login(User.CreateTitle(titles[0]));
+                        //User.CreateTitle(titles[0]);
+                        User.Login();
                         isCursorCorrect = true;
                         break;
                     case "2":
-                        User.Register(User.CreateTitle(titles[1]));
+                        //User.CreateTitle(titles[1]);
+                        User.Register();
                         isCursorCorrect = true;
                         break;
                     default:
