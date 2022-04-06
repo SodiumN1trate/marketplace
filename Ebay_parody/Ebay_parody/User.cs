@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 class User {
     private int ID;
     private string firstname;
-    private string surname;
+    private string lastname;
     private string email;
     private decimal balance;
     private int productForSale; //CHANGE(list)
@@ -17,9 +17,14 @@ class User {
         set { firstname = value; }
     }
 
-    public string Surname {
-        get { return surname; }
-        set { surname = value; }
+    public string Lastname {
+        get { return lastname; }
+        set { lastname = value; }
+    }
+
+    public string Email {
+        get { return email; }
+        set { email = value; }
     }
 
     public decimal Balance {
@@ -44,33 +49,21 @@ class User {
         Console.WriteLine(RegisterMenu);
 
         Console.Write("Choose authentication method: ");
-        string cursor = Console.ReadLine();
-        Console.WriteLine(cursor);
-
-        while (cursor != "1" || cursor != "2") {
-            if (cursor != "1" || cursor != "2") {
-                Console.WriteLine("Incorrect input, try again!");
-                Console.Write("Choose authentication method: ");
-                cursor = Console.ReadLine();
-                continue;
-            } else {
-                break;
-            }
-        }
+        string Cursor = Console.ReadLine();
 
         Console.Clear();
 
-        switch (cursor) {
+        switch (Cursor) {
             case "1":
-                User.Login();
+                User.Login(ref LoginMenu);
                 break;
             case "2":
-                User.Register();
+                User.Register(ref RegisterMenu);
                 break;
             default:
-                Console.WriteLine("Not correct number input...");
+                Console.WriteLine("Not correct input...");
                 Console.ReadKey();
-                Environment.Exit(0);
+                Environment.Exit(0); //Varbūt while ciklā ielikt, lai lietotājs atkārtoti vada skaitli
                 break;
         }     
     }
@@ -91,14 +84,11 @@ class User {
                 pass += keyInfo.KeyChar;
             }
         } while (key != ConsoleKey.Enter);
+        Console.WriteLine();
         return pass;
     }
 
-    public static void Login() {
-        string LoginMenu = string.Format("{0,-15}", "+ - - - - - - +\n");
-        LoginMenu += string.Format("{0, 0} {1,-11}", "|", "1. Login    |\n");
-        LoginMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
-
+    public static void Login(ref string LoginMenu) {
         Console.WriteLine(LoginMenu);
 
         Console.Write("Firstname: ");
@@ -107,19 +97,32 @@ class User {
         Console.Write("Password: ");
         string pass = User.PasswordHider();
 
-
-
-        //Console.WriteLine($"\nPass is {pass}"); //debug
-
         Console.ReadKey();
     }
 
-    public static void Register() {
-        string RegisterMenu = string.Format("{0,-15}", "+ - - - - - - +\n");
-        RegisterMenu += string.Format("{0, 0} {1,-11}", "|", "1. Register sd|\n");
-        RegisterMenu += string.Format("{0,-15}", "+ - - - - - - +\n");
+    public static void Register(ref string RegisterMenu) {
         Console.WriteLine(RegisterMenu);
 
+        Console.Write("Firstname: ");
+        string Firstname = Console.ReadLine();
+
+        Console.Write("Lastname: ");
+        string Lastname = Console.ReadLine();
+
+        Console.Write("Email: ");
+        string Email = Console.ReadLine();
+
+        Console.Write("Password: ");
+        string pass = PasswordHider();
+
+        User newUser = new User();
+        newUser.Firstname = Firstname;
+        newUser.Lastname = Lastname;
+        newUser.Email = Email;
+        newUser.Balance = 0;
+
+
+        Console.WriteLine($"Firstname {newUser.Firstname}\nLastame {newUser.Lastname}\nEmail {newUser.Email}"); //debug
 
         Console.ReadKey();
     }

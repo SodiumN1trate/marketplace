@@ -48,7 +48,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="QuerryBuilder.cs" />
+    <Compile Include="QueryBuilder.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

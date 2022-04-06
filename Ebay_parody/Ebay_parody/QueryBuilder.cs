@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Ebay_parody {
-    class QuerryBuilder {
+    class QueryBuilder {
         private string tableName;
     }
 }
