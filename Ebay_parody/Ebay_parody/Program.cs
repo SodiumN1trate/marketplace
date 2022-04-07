@@ -8,23 +8,30 @@ using MySql.Data.MySqlClient;
 namespace Ebay_parody {
     class Program {
         static void Main(string[] args) {
-            string cs = @"server=localhost;
-                        userid=root;
-                        password=;
-                        database=csharp";
 
-            var con = new MySqlConnection(cs);
-            con.Open();
+            string[] titles = {"Login", "Register"};
+            bool isCursorCorrect = false;
+            while (isCursorCorrect != true) {
+                User.CreateButtonList(titles, true);
+                Console.Write("Choose authentication method: ");
+                string cursor = Console.ReadLine();
 
-            var cmd = new MySqlCommand();
-            cmd.Connection = con;
-
-            cmd.CommandText = @"CREATE TABLE user(id INTEGER PRIMARY KEY AUTO_INCREMENT, firstname TEXT, lastname INT)";
-            cmd.ExecuteNonQuery();
-
-            Console.ReadKey();
-            Console.WriteLine($"MySQL version : {con.ServerVersion}");
-            Console.ReadKey();
+                Console.Clear();
+                switch (cursor) {
+                    case "1":
+                        User.Login();
+                        isCursorCorrect = true;
+                        break;
+                    case "2":
+                        User.Register();
+                        isCursorCorrect = true;
+                        break;
+                    default:
+                        Console.WriteLine("Not correct input...");
+                        Console.Clear();
+                        break;
+                }
+            } 
         }
     }
 }
