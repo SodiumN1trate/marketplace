@@ -41,18 +41,14 @@ class User {
         set { productForSale = value; }
     }
 
-    public static void CreateButtonList(string title, string[] titles = null) {
-        int serialNumber = 0;
-        do {
+    public static void CreateButtonList(string[] titles, bool serialNumbering) {
+        
+        for(int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
             string button = string.Format("{0,-15}", "+ - - - - - - +\n");
-            button += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{ (title == " " ? $"{serialNumber + 1}. {titles[serialNumber]}" : title) }", "|\n");
+            button += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{ (serialNumbering == true ? $"{serialNumber + 1}. {titles[serialNumber]}" : titles[serialNumber]) }", "|\n");
             button += string.Format("{0,-15}", "+ - - - - - - +\n");
             Console.WriteLine(button);
-            if (titles == null) {
-                break;
-            }
-            serialNumber++;
-        } while (serialNumber <= titles.Length - 1);
+        }
     }
 
     private static string PasswordHider() {
@@ -76,7 +72,7 @@ class User {
     }
 
     public static void Login() {
-        User.CreateButtonList("Login");
+        User.CreateButtonList(new string[] {"Login"}, false);
 
         Console.Write("Firstname: ");
         string Firstname = Console.ReadLine();
@@ -88,7 +84,7 @@ class User {
     }
 
     public static void Register() {
-        User.CreateButtonList("Register");
+        User.CreateButtonList(new string[] {"Register"}, false);
 
         Console.Write("Firstname: ");
         string Firstname = Console.ReadLine();
