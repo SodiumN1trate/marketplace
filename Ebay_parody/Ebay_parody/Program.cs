@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 namespace Ebay_parody {
     class Program {
         static void Main(string[] args) {
-            QueryBuilder users = new QueryBuilder("user");
+            QueryBuilder user = new QueryBuilder("user");
             /*
             List<List<dynamic>> data = users.Select(new string[] { "*" });
             foreach (List<dynamic> row in data) {
@@ -19,18 +19,32 @@ namespace Ebay_parody {
             }
             */
 
-            List<List<dynamic>> data = users.Select(new string[] { "*" });
-
-
+            //List<List<dynamic>> data = user.Select(new string[] { "id", "firstname" }, new dynamic[,] { { "id", 14 } });
+            //List<List<dynamic>> data = user.Select(new string[] { "*" });
+            /*
             foreach (List<dynamic> row in data) {
                 foreach (dynamic cell in row) {
                     Console.Write($"{cell}\t|");
                 }
                 Console.WriteLine();
             }
+            */
 
-            users.Update(new dynamic[,] { { "lastname", "kazakevièa" }, {"firstname", "dsadsajânis"}  }, new dynamic[,] { { "id", 5 } });
-            users.Insert(new dynamic[] { "", "Pçteris", "Birziòð", "testers@lc.es", "123", "" });
+            /*
+            //SELECT {"Kâdas vçrtîbas ir jâpieprasa(var arî visu ar "*")"} | WHERE { { "column nosaukums", Kâdu vçrtîbu meklç } }
+            //Iegûs datus, kâdi tiks pieprasîti      
+            List<List<dynamic>> data = user.Select(new string[] { "id", "firstname" }, new dynamic[,] { { "email", $"'{ email }'" } });
+            //Iegûtâ vçrtîba
+            Console.WriteLine(data[0][0]);
+
+            //UPDATE{"(identiski)lastname" "juans firstname"} { var veidot cik gribi katrai column} | WHERE { { "column nosaukums", Kâdu vçrtîbu meklç } }
+            //Atjaunos esoðos datus datubâzç
+            user.Update(new dynamic[,] { { "db column name", "jauns nosaukums" }, { "db column name", "jauns nosaukums" } }, new dynamic[,] { { "id", 5 } });
+
+            //INSERT {"id"(auto), "firstname", "lastname", "email", "password"}
+            //Ievietos jaunus datus datubâzç
+            user.Insert(new dynamic[] { "", "Pçteris", "Birziòð", "asda@gmail.com", "123", "" });
+            */
 
             string[] titles = { "Login", "Register" };
             bool isCursorCorrect = false;

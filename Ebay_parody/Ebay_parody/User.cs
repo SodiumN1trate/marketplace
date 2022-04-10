@@ -3,110 +3,116 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
-class User {
-    private int ID;
-    private string firstname;
-    private string lastname;
-    private string email;
-    private decimal balance;
-    private int productForSale; //CHANGE(list)
+namespace Ebay_parody {
+    class User {
+        private int ID;
+        private string firstname;
+        private string lastname;
+        private string email;
+        private decimal balance;
+        private int productForSale; //CHANGE(list)
 
-    public int IDs {
-        get { return ID; }
-    }
-
-    public string Firstname {
-        get { return firstname; }
-        set { firstname = value; }
-    }
-
-    public string Lastname {
-        get { return lastname; }
-        set { lastname = value; }
-    }
-
-    public string Email {
-        get { return email; }
-        set { email = value; }
-    }
-
-    public decimal Balance {
-        get { return balance; }
-        set { balance = value; }
-    }
-
-    public int ProductForSale { //CHANGE(list)
-        get { return productForSale; }
-        set { productForSale = value; }
-    }
-
-    public static void CreateButtonList(string[] titles, bool serialNumbering) {
-        
-        for(int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
-            string button = string.Format("{0,-15}", "+ - - - - - - +\n");
-            button += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{ (serialNumbering == true ? $"{serialNumber + 1}. {titles[serialNumber]}" : titles[serialNumber]) }", "|\n");
-            button += string.Format("{0,-15}", "+ - - - - - - +\n");
-            Console.WriteLine(button);
+        public int IDs {
+            get { return ID; }
         }
-    }
 
-    private static string PasswordHider() {
-        var pass = string.Empty;
+        public string Firstname {
+            get { return firstname; }
+            set { firstname = value; }
+        }
 
-        ConsoleKey key;
-        do {
-            var keyInfo = Console.ReadKey(intercept: true);
-            key = keyInfo.Key;
+        public string Lastname {
+            get { return lastname; }
+            set { lastname = value; }
+        }
 
-            if (key == ConsoleKey.Backspace && pass.Length > 0) {
-                Console.Write("\b \b");
-                pass = pass.Remove(pass.Length - 1, 1);
-            } else if (!char.IsControl(keyInfo.KeyChar)) {
-                Console.Write("*");
-                pass += keyInfo.KeyChar;
+        public string Email {
+            get { return email; }
+            set { email = value; }
+        }
+
+        public decimal Balance {
+            get { return balance; }
+            set { balance = value; }
+        }
+
+        public int ProductForSale { //CHANGE(list)
+            get { return productForSale; }
+            set { productForSale = value; }
+        }
+
+        public static void CreateButtonList(string[] titles, bool serialNumbering) {
+            for (int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
+                string button = string.Format("{0,-15}", "+ - - - - - - +\n");
+                button += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{ (serialNumbering == true ? $"{serialNumber + 1}. {titles[serialNumber]}" : titles[serialNumber]) }", "|\n");
+                button += string.Format("{0,-15}", "+ - - - - - - +\n");
+                Console.WriteLine(button);
             }
-        } while (key != ConsoleKey.Enter);
-        Console.WriteLine();
-        return pass;
-    }
+        }
 
-    public static void Login() {
-        User.CreateButtonList(new string[] {"Login"}, false);
+        private static string PasswordHider() {
+            var pass = string.Empty;
 
-        Console.Write("Firstname: ");
-        string Firstname = Console.ReadLine();
+            ConsoleKey key;
+            do {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
 
-        Console.Write("Password: ");
-        string pass = User.PasswordHider();
+                if (key == ConsoleKey.Backspace && pass.Length > 0) {
+                    Console.Write("\b \b");
+                    pass = pass.Remove(pass.Length - 1, 1);
+                } else if (!char.IsControl(keyInfo.KeyChar)) {
+                    Console.Write("*");
+                    pass += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
+            Console.WriteLine();
+            return pass;
+        }
 
-        Console.ReadKey();
-    }
+        public static void Login() {
+            User.CreateButtonList(new string[] { "Login" }, false);
 
-    public static void Register() {
-        User.CreateButtonList(new string[] {"Register"}, false);
+            Console.Write("Firstname: ");
+            string Firstname = Console.ReadLine();
 
-        Console.Write("Firstname: ");
-        string Firstname = Console.ReadLine();
+            Console.Write("Password: ");
+            string pass = User.PasswordHider();
 
-        Console.Write("Lastname: ");
-        string Lastname = Console.ReadLine();
+            Console.ReadKey();
+        }
 
-        Console.Write("Email: ");
-        string Email = Console.ReadLine();
+        public static void Register() {
+            QueryBuilder user = new QueryBuilder("user");
+            User.CreateButtonList(new string[] { "Register" }, false);
 
-        Console.Write("Password: ");
-        string pass = PasswordHider();
+            Console.Write("Firstname: ");
+            string firstname = Console.ReadLine();
 
-        User newUser = new User();
-        newUser.Firstname = Firstname;
-        newUser.Lastname = Lastname;
-        newUser.Email = Email;
-        newUser.Balance = 0;
+            Console.Write("Lastname: ");
+            string lastname = Console.ReadLine();
 
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
 
-        Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
+            Console.Write("Password: ");
+            string pass = PasswordHider();
 
-        Console.ReadKey();
+            User newUser = new User();
+            newUser.Firstname = firstname;
+            newUser.Lastname = lastname;
+            newUser.Email = email;
+            newUser.Balance = 0;
+
+            user.Insert(new dynamic[] { "", firstname, lastname, email, pass, "" });
+            List<List<dynamic>> data = user.Select(new string[] { "id", "firstname" }, new dynamic[,] { { "email", $"'{ email }'" } });
+            Console.WriteLine(data[0][0]);
+
+            Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
+
+            Console.ReadKey();
+        }
     }
 }
