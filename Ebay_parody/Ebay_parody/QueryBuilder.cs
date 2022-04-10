@@ -16,10 +16,27 @@ namespace Ebay_parody {
             db = new Database();
         }
 
-   
-       public List<List<dynamic>> Select(string[] columns) {
+        /**
+        * Izvelk ierakstus no datubāzes
+        *
+        * @param string[] columns - saraksts ar kolonām no datubāzes, kuras ir jāizvelk, tas ir piem.: { "id", "name" } vai {"*"}
+        * optional @param dynamic[,] where - saraksts ar filtrācijas datiem, tas ir piem.: { {"id", 3} }
+        * 
+        */
+        public List<List<dynamic>> Select(string[] columns, dynamic[,] where = null) {
+            dynamic whereData = "";
 
-            MySqlCommand cmd = new MySqlCommand($"SELECT {String.Join(", ", columns)} FROM {this.tableName}", db.Connection);
+            if (where != null) {
+                for (int i = 0; i < where.Length / 2; i++) {
+                    dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
+                    whereData += tempData + ",";
+                }
+                whereData = whereData.Remove(whereData.Length - 1, 1);
+            } else {
+                whereData = "1=1";
+            }
+
+            MySqlCommand cmd = new MySqlCommand($"SELECT {String.Join(", ", columns)} FROM {tableName} WHERE {whereData};", db.Connection);
             MySqlDataReader rdr = cmd.ExecuteReader();
 
             List<List<dynamic>> data = new List<List<dynamic>>();
@@ -34,6 +51,14 @@ namespace Ebay_parody {
             return data;
        }
 
+        /**
+        * Ievieto ierakstu datubāzē
+        * 
+        * @param dynamic[] data - saraksts ar visiem datiem, kas atbilst datubāzes kolonai. Tādu kā id rakstīt šadi - ""
+        * Piem. { "", "Pēteris", "Birziņš", "testers@lc.es", "123", "" }
+        *  
+        */
+
         public MySqlDataReader Insert(dynamic[] data) {
             MySqlCommand cmd = new MySqlCommand($"INSERT INTO {tableName} VALUES (\"{String.Join("\", \"", data)}\");", this.db.Connection);
             MySqlDataReader rdr = cmd.ExecuteReader();
@@ -41,16 +66,26 @@ namespace Ebay_parody {
             return rdr;
         }
 
+
+        /**
+        * Rediģē ierakstu datubāzē, pēc kritērijiem
+        * 
+        * @param dynamic[,] data - Saraksts ar kolonu nosaukumu un ar vērtību uz kuru vajaga rediģēt. Piem. { {"firstname", "Jānis"}, {"lastname", "Pētersons"} }
+        * @param dynamic[,] where - saraksts ar filtrācijas datiem, tas ir piem.: { {"id", 3} }
+        *
+        *
+        */
         public MySqlDataReader Update(dynamic[,] data, dynamic[,] where) {
             dynamic updateData = "";
             dynamic whereData = "";
-
-            for(int i = 0; i < data.Length - 1; i++) {
+            Console.WriteLine(data.Length);
+            Console.ReadKey();
+            for(int i = 0; i < data.Length / 2; i++) {
                 dynamic tempData = String.Join("=", new dynamic[] { data[i, 0], "\"" + data[i, 1] + "\"" });
                 updateData += tempData + ",";
             }
 
-            for (int i = 0; i < where.Length - 1; i++) {
+            for (int i = 0; i < where.Length / 2; i++) {
                 dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
                 Console.WriteLine(tempData);
                 whereData += tempData + ",";
@@ -63,10 +98,16 @@ namespace Ebay_parody {
             return rdr;
         }
 
+        /** 
+        * Izdzēš ierakstu no datubāzēs
+        * 
+        * @param dynamic[,] where - saraksts ar filtrācijas datiem, tas ir piem.: { {"id", 3} }
+        * 
+        */
         public MySqlDataReader Delete(dynamic[,] where) {
             dynamic whereData = "";
 
-            for (int i = 0; i < where.Length - 1; i++) {
+            for (int i = 0; i < where.Length / 2; i++) {
                 dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
                 Console.WriteLine(tempData);
                 whereData += tempData + ",";

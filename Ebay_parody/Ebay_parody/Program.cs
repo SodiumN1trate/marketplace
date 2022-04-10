@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 namespace Ebay_parody {
     class Program {
         static void Main(string[] args) {
-        QueryBuilder users = new QueryBuilder("user");
+            QueryBuilder users = new QueryBuilder("user");
             /*
             List<List<dynamic>> data = users.Select(new string[] { "*" });
             foreach (List<dynamic> row in data) {
@@ -19,26 +19,42 @@ namespace Ebay_parody {
             }
             */
 
-            /*
-            var cmd = new MySqlCommand("SELECT * FROM `user`;", db.Connection);
-            MySqlDataReader rdr = cmd.ExecuteReader();
-            rdr.Read();
-            */
+            List<List<dynamic>> data = users.Select(new string[] { "*" });
 
-            var con = new MySqlConnection(cs);
-            con.Open();
 
-            var cmd = new MySqlCommand();
-            cmd.Connection = con;
+            foreach (List<dynamic> row in data) {
+                foreach (dynamic cell in row) {
+                    Console.Write($"{cell}\t|");
+                }
+                Console.WriteLine();
+            }
 
-            cmd.CommandText = @"CREATE TABLE user(id INTEGER PRIMARY KEY AUTO_INCREMENT, firstname TEXT, lastname INT)";
-            cmd.ExecuteNonQuery();
+            users.Update(new dynamic[,] { { "lastname", "kazakevièa" }, {"firstname", "dsadsajânis"}  }, new dynamic[,] { { "id", 5 } });
+            users.Insert(new dynamic[] { "", "Pçteris", "Birziòð", "testers@lc.es", "123", "" });
 
-            Console.ReadKey();
-            Console.WriteLine($"MySQL version : {con.ServerVersion}");
-            Console.ReadKey();
-            */
-            User.Authentication();
+            string[] titles = { "Login", "Register" };
+            bool isCursorCorrect = false;
+            while (isCursorCorrect != true) {
+                User.CreateButtonList(titles, true);
+                Console.Write("Choose authentication method: ");
+                string cursor = Console.ReadLine();
+
+                Console.Clear();
+                switch (cursor) {
+                    case "1":
+                        User.Login();
+                        isCursorCorrect = true;
+                        break;
+                    case "2":
+                        User.Register();
+                        isCursorCorrect = true;
+                        break;
+                    default:
+                        Console.WriteLine("Not correct input...");
+                        Console.Clear();
+                        break;
+                }
+            }
         }
     }
 }
