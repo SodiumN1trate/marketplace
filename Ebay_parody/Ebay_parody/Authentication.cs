@@ -7,43 +7,7 @@ using MySql.Data.MySqlClient;
 using System.Text.RegularExpressions;
 
 namespace Ebay_parody {
-    class User {
-        private int ID;
-        private string firstname;
-        private string lastname;
-        private string email;
-        private decimal balance;
-        private int productForSale; //CHANGE(list)
-
-        public int IDs {
-            get { return ID; }
-        }
-
-        public string Firstname {
-            get { return firstname; }
-            set { firstname = value; }
-        }
-
-        public string Lastname {
-            get { return lastname; }
-            set { lastname = value; }
-        }
-
-        public string Email {
-            get { return email; }
-            set { email = value; }
-        }
-
-        public decimal Balance {
-            get { return balance; }
-            set { balance = value; }
-        }
-
-        public int ProductForSale { //CHANGE(list)
-            get { return productForSale; }
-            set { productForSale = value; }
-        }
-        /*
+    class Authentication {
         public static void CreateButtonList(string[] titles, bool serialNumbering = false) {
             for (int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
                 string button = string.Format("{0,-15}", "+ - - - - - - +\n");
@@ -74,19 +38,19 @@ namespace Ebay_parody {
         }
 
         public static void Login() {
-            User.CreateButtonList(new string[] { "Login" });
+            Authentication.CreateButtonList(new string[] { "Login" });
 
             Console.Write("Firstname: ");
             string Firstname = Console.ReadLine();
 
             Console.Write("Password: ");
-            string pass = User.PasswordHider();
+            string pass = Authentication.PasswordHider();
 
             Console.ReadKey();
         }
 
         public static void Register() {
-            User.CreateButtonList(new string[] { "Register" });
+            Authentication.CreateButtonList(new string[] { "Register" });
             QueryBuilder user = new QueryBuilder("user");
 
             string firstname = "";
@@ -99,7 +63,7 @@ namespace Ebay_parody {
             while (error != "checked") {
                 Console.Write("\rFirstname: ");
                 firstname = Console.ReadLine();
-                Console.SetCursorPosition(0, Console.CursorTop-1);
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
                 error = Validation.Validate(new string[] { "required", "min-length:7" }, firstname);
             }
             error = "asd";
@@ -112,23 +76,28 @@ namespace Ebay_parody {
                 error = Validation.Validate(new string[] { "required", "min-length:7" }, lastname);
             }
             error = "asd";
-            Console.SetCursorPosition(0, Console.CursorTop -2);
+            Console.SetCursorPosition(0, Console.CursorTop + 2);
 
             while (error != "checked") {
-                Console.Write("Email: ");
+                Console.Write("\rEmail: ");
                 email = Console.ReadLine();
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
-                Validation.Validate(new string[] { "required", "email", "min-length:7" }, email);
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                error = Validation.Validate(new string[] { "required", "email", "min-length:7" }, email);
             }
             error = "asd";
+            Console.SetCursorPosition(0, Console.CursorTop + 2);
 
             while (error != "checked") {
-                Console.Write("Password: ");
+                Console.Write("\rPassword: ");
                 pass = PasswordHider();
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
-                Validation.Validate(new string[] { "required", "min-length:7", "max-length:30" }, pass);
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                error = Validation.Validate(new string[] { "required", "min-length:7", "max-length:30" }, pass);
             }
             error = "asd";
+            Console.SetCursorPosition(0, Console.CursorTop + 2);
+            Console.WriteLine("asdasd");
+            Console.WriteLine("asdasd");
+            Console.ReadKey();
 
 
             User newUser = new User();
@@ -145,6 +114,5 @@ namespace Ebay_parody {
 
             Console.ReadKey();
         }
-        */
     }
 }

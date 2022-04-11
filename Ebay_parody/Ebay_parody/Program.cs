@@ -49,18 +49,18 @@ namespace Ebay_parody {
             string[] titles = { "Login", "Register" };
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
-                User.CreateButtonList(titles, true);
+                Authentication.CreateButtonList(titles, true);
                 Console.Write("Choose authentication method: ");
                 string cursor = Console.ReadLine();
 
                 Console.Clear();
                 switch (cursor) {
                     case "1":
-                        User.Login();
+                        Authentication.Login();
                         isCursorCorrect = true;
                         break;
                     case "2":
-                        User.Register();
+                        Authentication.Register();
                         isCursorCorrect = true;
                         break;
                     default:

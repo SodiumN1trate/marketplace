@@ -54,7 +54,7 @@ namespace Ebay_parody {
         /**
         * Ievieto ierakstu datubāzē
         * 
-        * @param dynamic[] data - saraksts ar visiem datiem, kas atbilst datubāzes kolonai. Tādu kā id rakstīt šadi - ""
+        * @param dynamic[] data - saraksts ar visiem datiem, kas atbilst datubāzes kolonai. Tādu kā id rakstīt šadi - 0
         * Piem. { "", "Pēteris", "Birziņš", "testers@lc.es", "123", "" }
         *  
         */
