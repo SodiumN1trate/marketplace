@@ -53,66 +53,41 @@ namespace Ebay_parody {
             Authentication.CreateButtonList(new string[] { "Register" });
             QueryBuilder user = new QueryBuilder("user");
 
-            string firstname = "";
-            string lastname = "";
-            string email = "";
-            string pass = "";
-
-            string error = "asd";
-
-            while (error != "checked") {
-                Console.Write("\rFirstname: ");
-                firstname = Console.ReadLine();
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                error = Validation.Validate(new string[] { "required", "min-length:7" }, firstname);
-            }
-            error = "asd";
-            Console.SetCursorPosition(0, Console.CursorTop + 2);
-
-            while (error != "checked") {
-                Console.Write("\rLastname: ");
-                lastname = Console.ReadLine();
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                error = Validation.Validate(new string[] { "required", "min-length:7" }, lastname);
-            }
-            error = "asd";
-            Console.SetCursorPosition(0, Console.CursorTop + 2);
-
-            while (error != "checked") {
-                Console.Write("\rEmail: ");
-                email = Console.ReadLine();
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                error = Validation.Validate(new string[] { "required", "email", "min-length:7" }, email);
-            }
-            error = "asd";
-            Console.SetCursorPosition(0, Console.CursorTop + 2);
-
-            while (error != "checked") {
-                Console.Write("\rPassword: ");
-                pass = PasswordHider();
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                error = Validation.Validate(new string[] { "required", "min-length:7", "max-length:30" }, pass);
-            }
-            error = "asd";
-            Console.SetCursorPosition(0, Console.CursorTop + 2);
-            Console.WriteLine("asdasd");
-            Console.WriteLine("asdasd");
+            string firstname = Authentication.Input("Firstname", new string[] { "required", "min-length:5" });
+            string lastname = Authentication.Input("Lastname", new string[] { "required", "min-length:5" });
+            string email = Authentication.Input("Email", new string[] { "required", "email" });
+            string pass = Authentication.Input("Password", new string[] { "required", "min-length:7", "max-length:30" });
+            Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
-
-
-            User newUser = new User();
-            newUser.Firstname = firstname;
-            newUser.Lastname = lastname;
-            newUser.Email = email;
-            newUser.Balance = 0;
 
             user.Insert(new dynamic[] { 0, firstname, lastname, email, pass, 0 });
-            List<List<dynamic>> data = user.Select(new string[] { "id", "firstname" }, new dynamic[,] { { "email", $"'{ email }'" } });
-            Console.WriteLine(data[0][0]);
+            //List<List<dynamic>> data = user.Select(new string[] { "id", "firstname" }, new dynamic[,] { { "email", $"'{ email }'" } });
+            //Console.WriteLine(data[0][0]);
 
-            Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
-
-            Console.ReadKey();
+            //Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
         }
+
+        public static string Input(string type, string[] parameters) {
+            string error = "";
+            string input = "";
+
+            while (error != "checked") {
+                Console.Write($"\r{type}: ");
+                if (type == "Password") {
+                    input = PasswordHider();
+                } else {
+                    input = Console.ReadLine();
+                }
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                error = Validation.Validate(parameters, input);
+                if (error != "checked") {
+                    Console.Write($"\r{error}");
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+                }
+            }
+            Console.SetCursorPosition(0, Console.CursorTop + 3);
+            return input;
+        }
+
     }
 }

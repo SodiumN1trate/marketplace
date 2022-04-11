@@ -68,6 +68,8 @@ namespace Ebay_parody {
                         Console.Clear();
                         break;
                 }
+                Console.WriteLine("The end!");
+                Console.ReadKey();
             }
         }
     }
