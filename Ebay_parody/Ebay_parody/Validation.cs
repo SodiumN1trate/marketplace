@@ -14,13 +14,13 @@ namespace Ebay_parody {
                 switch (criterion) {
                     case "required":
                         error =  Required(parameter);
-                        if (error != "") {return error;} else {break;}
+                        if (error != "") { return error; } else { break; }
                     case "email":
                         error = Email(parameter);
                         if (error != "") { return error; } else { break; }
                     case "min-length:":
                         error = MinLength(criterions[i], parameter);
-                        if (error != "") {return error;} else {break;}
+                        if (error != "") { return error; } else { break; }
                     case "max-length:":
                         error = MaxLength(criterions[i], parameter);
                         if (error != "") { return error; } else { break; }
@@ -40,7 +40,7 @@ namespace Ebay_parody {
         }
 
         public static string Email(string parameter) {
-            if (parameter.IndexOf("@") == -1  || parameter.IndexOf(".") == -1) {
+            if (Regex.IsMatch(parameter, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z") == false) {
                 Output();
                 return "Please match the requested format";
             } else { return ""; }
