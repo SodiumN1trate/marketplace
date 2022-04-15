@@ -54,11 +54,10 @@ namespace Ebay_parody {
         /**
         * Ievieto ierakstu datubāzē
         * 
-        * @param dynamic[] data - saraksts ar visiem datiem, kas atbilst datubāzes kolonai. Tādu kā id rakstīt šadi - ""
+        * @param dynamic[] data - saraksts ar visiem datiem, kas atbilst datubāzes kolonai. Tādu kā id rakstīt šadi - 0
         * Piem. { "", "Pēteris", "Birziņš", "testers@lc.es", "123", "" }
         *  
         */
-
         public MySqlDataReader Insert(dynamic[] data) {
             MySqlCommand cmd = new MySqlCommand($"INSERT INTO {tableName} VALUES (\"{String.Join("\", \"", data)}\");", this.db.Connection);
             MySqlDataReader rdr = cmd.ExecuteReader();
@@ -78,8 +77,6 @@ namespace Ebay_parody {
         public MySqlDataReader Update(dynamic[,] data, dynamic[,] where) {
             dynamic updateData = "";
             dynamic whereData = "";
-            Console.WriteLine(data.Length);
-            Console.ReadKey();
             for(int i = 0; i < data.Length / 2; i++) {
                 dynamic tempData = String.Join("=", new dynamic[] { data[i, 0], "\"" + data[i, 1] + "\"" });
                 updateData += tempData + ",";
@@ -87,7 +84,6 @@ namespace Ebay_parody {
 
             for (int i = 0; i < where.Length / 2; i++) {
                 dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
-                Console.WriteLine(tempData);
                 whereData += tempData + ",";
             }
             updateData = updateData.Remove(updateData.Length - 1, 1);
@@ -98,7 +94,7 @@ namespace Ebay_parody {
             return rdr;
         }
 
-        /** 
+        /**
         * Izdzēš ierakstu no datubāzēs
         * 
         * @param dynamic[,] where - saraksts ar filtrācijas datiem, tas ir piem.: { {"id", 3} }
