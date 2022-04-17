@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Ebay_parody {
-    class User {
-        private int ID;
+    class User : Product {
+        private int id;
         private string firstname;
         private string lastname;
         private string email;
         private decimal balance;
         private int productForSale; //CHANGE(list)
 
-        public int IDs {
-            get { return ID; }
+        public int UserID {
+            get { return id; }
+            set { id = value; }
         }
 
         public string Firstname {
@@ -41,6 +42,81 @@ namespace Ebay_parody {
         public int ProductForSale { //CHANGE(list)
             get { return productForSale; }
             set { productForSale = value; }
+        }
+
+        QueryBuilder user = new QueryBuilder("user");
+        public void Profile() {
+            bool isCursorCorrect = false;
+            while (isCursorCorrect != true) {
+                Authentication.CreateButtonList(new string[] { "Profile" });
+                Authentication.CreateButtonList(new string[] { this.firstname, this.lastname, this.email, "Exit" }, true);
+                Console.Write("Select operation: ");
+                string cursor = Console.ReadLine();
+
+                switch (cursor) {
+                    case "1":
+                        Console.Write("\nEnter new firstname\n");
+                        string firstname = Authentication.Input("default", "Firstname", new string[] { "required", "min-length:5" });
+                        user.Update(new dynamic[,] { { "firstname", firstname } }, new dynamic[,] { { "id", this.id } });
+                        this.firstname = firstname;
+                        Console.WriteLine("Firstname changed successfully");
+                        Console.ReadLine();
+                        Console.Clear();
+                        break;
+                    case "2":
+                        Console.Write("\nEnter new lastname\n");
+                        string lastname = Authentication.Input("default", "Lastname", new string[] { "required", "min-length:5" });
+                        user.Update(new dynamic[,] { { "lastname", lastname } }, new dynamic[,] { { "id", this.id } });
+                        this.lastname = lastname;
+                        Console.WriteLine("Lastname changed successfully");
+                        Console.ReadLine();
+                        Console.Clear();
+                        break;
+                    case "3":
+                        Console.Write("\nEnter new lastname\n");
+                        string email = Authentication.Input("default", "Email", new string[] { "required", "email", "email-exist" });
+                        user.Update(new dynamic[,] { { "email", email } }, new dynamic[,] { { "id", this.id } });
+                        this.email = email;
+                        Console.WriteLine("Email changed successfully");
+                        Console.ReadLine();
+                        Console.Clear();
+                        break;
+                    case "4":
+                        Console.Clear();
+                        isCursorCorrect = true;
+                        break;
+                    default:
+                        Console.WriteLine("Not correct input...");
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+
+        public void Wallet() {
+            bool isCursorCorrect = false;
+            while (isCursorCorrect != true) {
+                Authentication.CreateButtonList(new string[] { "Wallet", $"Balance: {this.balance}" });
+                Authentication.CreateButtonList(new string[] { "Add funds", "Back" }, true);
+                Console.Write("Select operation: ");
+                string cursor = Console.ReadLine();
+
+                switch (cursor) {
+                    case "1":
+                        Console.Write("\nAdd funds\n");
+                        decimal funds = Convert.ToDecimal(Authentication.Input("default", "Add funds", new string[] { "money-request" }));
+                        this.balance += funds;
+                        user.Update(new dynamic[,] { { "balance", this.balance } }, new dynamic[,] { { "id", this.id } });
+                        Console.WriteLine("Funds added successfully");
+                        Console.ReadLine();
+                        Console.Clear();
+                        break;
+                    case "2":
+                        isCursorCorrect = true;
+                        Console.Clear();
+                        break;
+                }
+            }
         }
     }
 }
