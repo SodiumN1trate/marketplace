@@ -48,7 +48,8 @@ namespace Ebay_parody {
         public void ProductList() {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
-                Authentication.CreateButtonList(new string[] { "Purchased products" });
+                Authentication.CreateButtonList(new string[] { "Products" });
+                Authentication.CreateButtonList(new string[] { "Show product list", "back" }, true);
                 Console.Write("Select operation: ");
                 string cursor = Console.ReadLine();
 
