@@ -10,9 +10,18 @@ namespace Ebay_parody {
     class Authentication {
         public static void CreateButtonList(string[] titles, bool serialNumbering = false) {
             for (int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
-                string button = string.Format("{0,-15}", "+ - - - - - - +\n");
-                button += string.Format("{0, 0} {1,-11} {2,0}", "|", $"{ (serialNumbering == true ? $"{serialNumber + 1}. {titles[serialNumber]}" : titles[serialNumber]) }", "|\n");
-                button += string.Format("{0,-15}", "+ - - - - - - +\n");
+                string buttonTitle;
+                string buttonLength;
+                if (serialNumbering == true) {
+                    buttonTitle = $"{serialNumber + 1}. {titles[serialNumber]}";
+                    buttonLength = string.Join("", Enumerable.Repeat("-", titles[serialNumber].Length + 3));
+                } else {
+                    buttonTitle = titles[serialNumber];
+                    buttonLength = string.Join("", Enumerable.Repeat("-", titles[serialNumber].Length));
+                }
+                string button = string.Format("{0,0} {1,0} {2,1}", "+", $"{buttonLength}", "+\n");
+                button += string.Format("{0, 0} {1,0} {2,0}", "|", $"{buttonTitle}", "|\n");
+                button += string.Format("{0,0} {1,0} {2,1}", "+", $"{buttonLength}", "+\n");
                 Console.WriteLine(button);
             }
         }
@@ -37,37 +46,42 @@ namespace Ebay_parody {
             return pass;
         }
 
-        public static void Login() {
+        public static int Login() {
+            QueryBuilder user = new QueryBuilder("user");
             Authentication.CreateButtonList(new string[] { "Login" });
-
-            Console.Write("Firstname: ");
-            string Firstname = Console.ReadLine();
+            
+            Console.Write("Email: ");
+            string email = Authentication.Input("login", "Email", new string[] { "required", "email", "email-exist" });
+            List<List<dynamic>> data = user.Select(new string[] { "*" }, new dynamic[,] { { "email", $"'{ email }'" } });
 
             Console.Write("Password: ");
-            string pass = Authentication.PasswordHider();
+            string pass = Authentication.Input("login", "Password", new string[] { "required", "min-length:7", "max-length:30", "pass-exist" }, data);
 
+            Console.WriteLine("Successful logged-in");
             Console.ReadKey();
+            return data[0][0];
         }
 
         public static void Register() {
             Authentication.CreateButtonList(new string[] { "Register" });
             QueryBuilder user = new QueryBuilder("user");
 
-            string firstname = Authentication.Input("Firstname", new string[] { "required", "min-length:5" });
-            string lastname = Authentication.Input("Lastname", new string[] { "required", "min-length:5" });
-            string email = Authentication.Input("Email", new string[] { "required", "email" });
-            string pass = Authentication.Input("Password", new string[] { "required", "min-length:7", "max-length:30" });
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
+            string firstname = Authentication.Input("default", "Firstname", new string[] { "required", "min-length:5" });
+            string lastname = Authentication.Input("default", "Lastname", new string[] { "required", "min-length:5" });
+            string email = Authentication.Input("default", "Email", new string[] { "required", "email", "email-exist" });
+            string pass = Authentication.Input("default", "Password", new string[] { "required", "min-length:7", "max-length:30" });
+
 
             user.Insert(new dynamic[] { 0, firstname, lastname, email, pass, 0 });
+            Console.WriteLine("Account successful registered");
+            Console.ReadKey();
             //List<List<dynamic>> data = user.Select(new string[] { "id", "firstname" }, new dynamic[,] { { "email", $"'{ email }'" } });
             //Console.WriteLine(data[0][0]);
 
             //Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
         }
 
-        public static string Input(string type, string[] parameters) {
+        public static string Input(string authenticationType, string type, string[] parameters, List<List<dynamic>> emailData = null) {
             string error = "";
             string input = "";
 
@@ -78,14 +92,31 @@ namespace Ebay_parody {
                 } else {
                     input = Console.ReadLine();
                 }
+
+                if (input.IndexOf('.') != -1 && type == "Price") {
+                    input = input.Replace('.', ',');
+                }
+
                 Console.SetCursorPosition(0, Console.CursorTop - 1);
-                error = Validation.Validate(parameters, input);
+                if (authenticationType == "default" && type == "Email") {
+                    error = Validation.Validate(parameters, input, authenticationType: $"{authenticationType}");
+                } else if (authenticationType == "login" && type == "Email") {
+                    error = Validation.Validate(parameters, input, authenticationType, emailData);
+                } else if (authenticationType == "default") {
+                    error = Validation.Validate(parameters, input);
+                } else {
+                    error = Validation.Validate(parameters, input, emailData: emailData);
+                }
+                
                 if (error != "checked") {
                     Console.Write($"\r{error}");
                     Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
                 }
             }
             Console.SetCursorPosition(0, Console.CursorTop + 3);
+            //if (input.IndexOf('.') != -1 && type == "Price") {
+            //    input = input.Replace('.', ',');
+            //}
             return input;
         }
 
