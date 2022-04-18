@@ -99,15 +99,15 @@ namespace Ebay_parody {
                         break;
                     case "3":
                         Console.Clear();
-                        userProfile.ProductList();
+                        Product.ProductList();
                         break;
                     case "4":
                         Console.Clear();
-                        userProfile.BuyProduct();
+                        Product.BuyProduct();
                         break;
                     case "5":
                         Console.Clear();
-                        userProfile.SellProduct(userProfile.UserID);
+                        Product.SellProduct(userProfile.UserID);
                         break;
                     case "6":
                         Console.Clear();

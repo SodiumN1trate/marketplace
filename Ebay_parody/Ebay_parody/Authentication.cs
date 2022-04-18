@@ -12,14 +12,6 @@ namespace Ebay_parody {
             for (int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
                 string buttonTitle;
                 string buttonLength;
-                //Izvēle starp dinamisku garumu vai fiksētu
-                //if (titles[serialNumber].Length > 8) {
-                //    buttonLength = string.Format("{0,0} {2,-26} {3,0}", "+", $"{}","+\n");
-                //    buttonTextLength = string.Format("{0, 0} {1,-23} {2,0}", "|", $"{ (serialNumbering == true ? $"{serialNumber + 1}. {titles[serialNumber]}" : titles[serialNumber]) }", "|\n");
-                //} else {
-                //    buttonLength = string.Format("{0,-15}", "+ - - - - - - +\n");
-                //    buttonTextLength = string.Format("{0, 0} {1,-11} {2,0}", "|", $"{ (serialNumbering == true ? $"{serialNumber + 1}. {titles[serialNumber]}" : titles[serialNumber]) }", "|\n");
-                //}
                 if (serialNumbering == true) {
                     buttonTitle = $"{serialNumber + 1}. {titles[serialNumber]}";
                     buttonLength = string.Join("", Enumerable.Repeat("-", titles[serialNumber].Length + 3));

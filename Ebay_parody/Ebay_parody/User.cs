@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Ebay_parody {
-    class User : Product {
+    class User {
         private int id;
         private string firstname;
         private string lastname;

@@ -9,7 +9,7 @@ namespace Ebay_parody {
     class Product{
         private int id;
         private int userId;
-        private string productTitle;
+        private string title;
         private string description;
         private decimal price;
         private int stock;
@@ -24,9 +24,9 @@ namespace Ebay_parody {
             set { userId = value; }
         }
 
-        public string ProductTitle {
-            get { return productTitle; }
-            set { productTitle = value; }
+        public string Title {
+            get { return title; }
+            set { title = value; }
         }
 
         public string Description {
@@ -45,7 +45,8 @@ namespace Ebay_parody {
         }
 
         QueryBuilder product = new QueryBuilder("product");
-        public void ProductList() {
+
+        public static void ProductList() {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
                 Authentication.CreateButtonList(new string[] { "Products" });
@@ -68,7 +69,9 @@ namespace Ebay_parody {
             }
         }
 
-        public void ListAllProducts() {
+        private static void ListAllProducts() {
+            QueryBuilder product = new QueryBuilder("product");
+
             Authentication.CreateButtonList(new string[] { "Products" });
             List<List<dynamic>> listData = product.Select(new string[] { "*" });
             bool isRow = true;
@@ -85,7 +88,7 @@ namespace Ebay_parody {
             }
         }
          
-        public void ListFormating(List<dynamic> listData) {
+        private static void ListFormating(List<dynamic> listData) {
             var lines = TextWrap(listData[3], 82);
             string listFormating = string.Format("{0,0}", "+-------------------------------+------------------------------------------------------------------------------------+\n");
             listFormating += string.Format("{0,0} {1,-29} {2,0} {3,-82} {4,0}", "|", $"{TextAlign(listData[2], 29)}", "|",$"{TextAlign("Product description", 82)}", "|\n");
@@ -146,7 +149,7 @@ namespace Ebay_parody {
             return lines;
         }
 
-        public void SellProduct(int userId) {
+        public static void SellProduct(int userId) {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
                 Authentication.CreateButtonList(new string[] { "List your product" });
@@ -169,22 +172,23 @@ namespace Ebay_parody {
             }
         }
 
-        private void CreateList(int userId) {
+        private static void CreateList(int userId) {
+            QueryBuilder product = new QueryBuilder("product");
+
             Product list = new Product();
             Authentication.CreateButtonList(new string[] { "List your product" });
             list.userId = userId;
-            list.ProductTitle = Authentication.Input("default", "Title", new string[] { "required", "min-length:5", "max-length:29" });
+            list.title = Authentication.Input("default", "Title", new string[] { "required", "min-length:5", "max-length:29" });
             list.Description = Authentication.Input("default", "Description", new string[] { "required", "max-length:255" });
             list.Price = Convert.ToDecimal(Authentication.Input("default", "Price", new string[] { "required", "max-length:9", "decimal-exist" }));
             list.Stock = Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));
 
-            product.Insert(new dynamic[] { 0, list.userId, list.ProductTitle, list.Description, list.Price, list.Stock });
+            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock });
             List<List<dynamic>> listData = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"{"LAST_INSERT_ID()"}" } });
             list.ProductID = listData[0][0];
-
         }
 
-        public void BuyProduct() {
+        public static void BuyProduct() {
             Authentication.CreateButtonList(new string[] { "Products for sale" });
 
         }
