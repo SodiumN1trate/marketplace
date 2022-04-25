@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Ebay_parody {
-    class Product{
+    class Product {
         private int id;
         private int userId;
         private string title;
@@ -14,7 +14,7 @@ namespace Ebay_parody {
         private decimal price;
         private int stock;
 
-        public int ProductID {
+        public int ID {
             get { return id; }
             set { id = value; }
         }
@@ -46,6 +46,7 @@ namespace Ebay_parody {
 
         QueryBuilder product = new QueryBuilder("product");
 
+        // Izvada menu ar 2 pogām(1. Izvadīs visus produktus, kuri pārdodas)
         public static void ProductList() {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
@@ -69,6 +70,7 @@ namespace Ebay_parody {
             }
         }
 
+        // Izvada visus produktus, kuri pārdodas
         private static void ListAllProducts() {
             QueryBuilder product = new QueryBuilder("product");
 
@@ -78,16 +80,22 @@ namespace Ebay_parody {
             int row = -1;
             while (isRow == true) {
                 row += 1;
+
                 try {
                     listData[row][0] = listData[row][0];
-                    ListFormating(listData[row]);
-                    continue;
+                    if (listData[row][6] == true) {
+                        continue;
+                    } else {
+                        ListFormating(listData[row]);
+                        continue;
+                    }
                 } catch {
                     isRow = false;
                 }
             }
         }
          
+        // Metode, kura smuki formatē tekstu
         private static void ListFormating(List<dynamic> listData) {
             var lines = TextWrap(listData[3], 82);
             string listFormating = string.Format("{0,0}", "+-------------------------------+------------------------------------------------------------------------------------+\n");
@@ -100,6 +108,7 @@ namespace Ebay_parody {
             Console.WriteLine(listFormating);
         }
 
+        // metoda, kura Centrē tekstu
         private static string TextAlign(string text, int length) {
             if (text.Length >= length) {
                 return text;
@@ -110,6 +119,8 @@ namespace Ebay_parody {
             return new string(' ', leftPadding) + text + new string(' ', rightPadding);
         }
 
+
+        // Metode, kura sadala tekstu 3 daļās, lai ir vienkārši ielikt tekstu ListFormating() metodē
         public static List<String> TextWrap(string text, int maxLength) {
             var words = text.Split(' ');
             var lines = new List<string>();
@@ -149,6 +160,7 @@ namespace Ebay_parody {
             return lines;
         }
 
+        // Menu kur lietotājam dota izvēla vai izveidot produktu kurš tiks pārdots
         public static void SellProduct(int userId) {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
@@ -161,7 +173,6 @@ namespace Ebay_parody {
                     case "1":
                         Console.Clear();
                         CreateList(userId);
-                        Console.ReadLine();
                         Console.Clear();
                         break;
                     case "2":
@@ -172,20 +183,46 @@ namespace Ebay_parody {
             }
         }
 
+        // Lieotājs izveido un izliek pārdot jaunu savu produktu
         private static void CreateList(int userId) {
             QueryBuilder product = new QueryBuilder("product");
 
             Product list = new Product();
             Authentication.CreateButtonList(new string[] { "List your product" });
-            list.userId = userId;
-            list.title = Authentication.Input("default", "Title", new string[] { "required", "min-length:5", "max-length:29" });
+            list.UserId = userId;
+            list.Title = Authentication.Input("default", "Title", new string[] { "required", "min-length:5", "max-length:29" });
             list.Description = Authentication.Input("default", "Description", new string[] { "required", "max-length:255" });
             list.Price = Convert.ToDecimal(Authentication.Input("default", "Price", new string[] { "required", "max-length:9", "decimal-exist" }));
             list.Stock = Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));
 
-            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock });
+            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 1 });
             List<List<dynamic>> listData = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"{"LAST_INSERT_ID()"}" } });
-            list.ProductID = listData[0][0];
+            list.ID = listData[0][0];
+            list.ListConfirmation();
+        }
+
+        // Confirm stadija, kur lietotājam aplūko savu produtka saraksta izskatu un pienem vai nepieņem pārdot
+        private void ListConfirmation() {
+            Authentication.CreateButtonList(new string[] { "Your product list confirmation" });
+            List<List<dynamic>> listData = product.Select(new string[] { "*" }, new dynamic[,] { { "id", this.id } });
+            ListFormating(listData[0]);
+            Authentication.CreateButtonList(new string[] { "Confirm list posting", "Cancel list posting"}, true);
+            Console.Write("Select operation: ");
+            string cursor = Console.ReadLine();
+
+            switch (cursor) {
+                case "1":
+                    Console.WriteLine("Your listing has been published");
+                    Console.ReadLine();
+                    Console.Clear();
+                    break;
+                default:
+                    product.Delete(new dynamic[,] { { "id", listData[0][0] } });
+                    Console.WriteLine("You list post is canceled");
+                    Console.ReadLine();
+                    Console.Clear();
+                    break;
+            }
         }
 
         public static void BuyProduct() {

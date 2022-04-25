@@ -105,7 +105,6 @@ namespace Ebay_parody {
 
             for (int i = 0; i < where.Length / 2; i++) {
                 dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
-                Console.WriteLine(tempData);
                 whereData += tempData + ",";
             }
 
