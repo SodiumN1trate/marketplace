@@ -99,11 +99,11 @@ namespace Ebay_parody {
                         break;
                     case "3":
                         Console.Clear();
-                        Product.ProductList();
+                        Product.ProductList(userProfile.ID, userProfile.Balance);
                         break;
                     case "4":
                         Console.Clear();
-                        Product.BuyProduct();
+                        Product.UserBoughtProducts(userProfile.ID);
                         break;
                     case "5":
                         Console.Clear();

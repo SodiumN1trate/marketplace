@@ -117,6 +117,9 @@ namespace Ebay_parody {
                         isCursorCorrect = true;
                         Console.Clear();
                         break;
+                    default:
+                        Console.Clear();
+                        continue;
                 }
             }
         }

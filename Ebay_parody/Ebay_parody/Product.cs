@@ -45,9 +45,12 @@ namespace Ebay_parody {
         }
 
         QueryBuilder product = new QueryBuilder("product");
+        QueryBuilder user = new QueryBuilder("user");
 
         // Izvada menu ar 2 pogām(1. Izvadīs visus produktus, kuri pārdodas)
-        public static void ProductList() {
+        public static void ProductList(int userID, decimal userBalance) {
+            QueryBuilder product = new QueryBuilder("product");
+            Product productBuy = new Product();
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
                 Authentication.CreateButtonList(new string[] { "Products" });
@@ -59,23 +62,86 @@ namespace Ebay_parody {
                     case "1":
                         Console.Write("\n\n");
                         ListAllProducts();
-                        Console.ReadLine();
-                        Console.Clear();
                         break;
                     case "2":
                         isCursorCorrect = true;
                         Console.Clear();
-                        break;
+                        return;
+                    default:
+                        Console.Clear();
+                        continue;
                 }
+
+                Console.Write("Select product by \"ID\": ");
+                string buyID = Console.ReadLine();
+                try {
+                    int convert = Convert.ToInt16(buyID);
+                } catch {
+
+                    Console.Clear();
+                    continue;
+                }
+                //MATCH(title, description) AGAINST('vertigo')
+                List<List<dynamic>> productToBuy = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"'{ buyID }'" } });
+                
+                try {
+                    productBuy.ID = productToBuy[0][0];
+                } catch {
+                    Console.WriteLine($"Product with id - {buyID} does not exist");
+                    Console.ReadKey();
+                    Console.Clear();
+                    continue;
+                }
+
+                productBuy.ID = productToBuy[0][0];
+
+                productBuy.ConfirmOrder(productToBuy[0], userID, userBalance);
+                Console.ReadKey();
             }
         }
 
-        // Izvada visus produktus, kuri pārdodas
-        private static void ListAllProducts() {
-            QueryBuilder product = new QueryBuilder("product");
+        private void ConfirmOrder(List<dynamic> productToBuy, int userID, decimal userBalance) {
+            Authentication.CreateButtonList(new string[] { "Order" });
+            
+            Console.ForegroundColor = ConsoleColor.Green;
+            ListFormating(productToBuy);
+            Console.ForegroundColor = ConsoleColor.Gray;
 
+            Authentication.CreateButtonList(new string[] { "Confirm order", "Cancel order" }, true);
+            Console.Write("Please confirm order: ");
+            string confirmation = Console.ReadLine();
+
+            if (confirmation == "1") {
+                if (userBalance - productToBuy[4] < 0) {
+                    Console.WriteLine("You don't have enough money to buy this product");
+                    Console.ReadKey();
+                    Console.Clear();
+                } else {
+                    userBalance = userBalance - productToBuy[4];
+                    product.Update(new dynamic[,] { { "user_id", userID }, { "is_bought", 1 } }, new dynamic[,] { { "id", this.id } });
+                    user.Update(new dynamic[,] { { "balance", userBalance } }, new dynamic[,] { { "id", userID } });
+                    Console.WriteLine($"You successfully ordered {productToBuy[2]}");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            } else {
+                Console.WriteLine($"Order {productToBuy[2]} canceled");
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
+
+        // Izvada visus produktus vai tikai tos ko pieprasa lietotājs(Savus nopirktos produktus)
+        private static void ListAllProducts(bool is_bought = false, int userID = -1) {
+            QueryBuilder product = new QueryBuilder("product");
+            List<List<dynamic>> listData;
             Authentication.CreateButtonList(new string[] { "Products" });
-            List<List<dynamic>> listData = product.Select(new string[] { "*" });
+            if (is_bought == false) {
+                listData = product.Select(new string[] { "*" });
+            } else {
+                listData = product.Select(new string[] { "*" }, new dynamic[,] { { "user_id", $"'{ userID }'" } });
+            }
+            
             bool isRow = true;
             int row = -1;
             while (isRow == true) {
@@ -83,10 +149,13 @@ namespace Ebay_parody {
 
                 try {
                     listData[row][0] = listData[row][0];
-                    if (listData[row][6] == true) {
+                    if (listData[row][6] == true && is_bought == true) {
+                        ListFormating(listData[row]);
+                        continue;
+                    } else if (is_bought == false && listData[row][6] != true) {
+                        ListFormating(listData[row]);
                         continue;
                     } else {
-                        ListFormating(listData[row]);
                         continue;
                     }
                 } catch {
@@ -179,6 +248,9 @@ namespace Ebay_parody {
                         isCursorCorrect = true;
                         Console.Clear();
                         break;
+                    default:
+                        Console.Clear();
+                        continue;
                 }
             }
         }
@@ -193,7 +265,7 @@ namespace Ebay_parody {
             list.Title = Authentication.Input("default", "Title", new string[] { "required", "min-length:5", "max-length:29" });
             list.Description = Authentication.Input("default", "Description", new string[] { "required", "max-length:255" });
             list.Price = Convert.ToDecimal(Authentication.Input("default", "Price", new string[] { "required", "max-length:9", "decimal-exist" }));
-            list.Stock = Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));
+            list.Stock = 1;/*Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));*/
 
             product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 1 });
             List<List<dynamic>> listData = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"{"LAST_INSERT_ID()"}" } });
@@ -225,9 +297,16 @@ namespace Ebay_parody {
             }
         }
 
-        public static void BuyProduct() {
-            Authentication.CreateButtonList(new string[] { "Products for sale" });
+        public static void UserBoughtProducts(int userID) {
+            
+            QueryBuilder product = new QueryBuilder("product");
 
+            Authentication.CreateButtonList(new string[] { "Your bought products" });
+            
+            ListAllProducts(true, userID);
+            Console.ReadKey();
+            Console.Clear();
         }
+
     }
 }
