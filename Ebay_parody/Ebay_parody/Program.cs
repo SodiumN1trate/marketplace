@@ -60,7 +60,7 @@ namespace Ebay_parody {
                     case "1":
                         int userId = Authentication.Login();
                         List<List<dynamic>> userData = user.Select(new string[] { "id", "firstname", "lastname", "email", "balance" }, new dynamic[,] { { "id", $"'{ userId }'" } });
-                        userProfile.UserID = userData[0][0];
+                        userProfile.ID = userData[0][0];
                         userProfile.Firstname = userData[0][1];
                         userProfile.Lastname = userData[0][2];
                         userProfile.Email = userData[0][3];
@@ -99,15 +99,15 @@ namespace Ebay_parody {
                         break;
                     case "3":
                         Console.Clear();
-                        Product.ProductList();
+                        Product.ProductList(userProfile.ID, userProfile.Balance);
                         break;
                     case "4":
                         Console.Clear();
-                        Product.BuyProduct();
+                        Product.UserBoughtProducts(userProfile.ID);
                         break;
                     case "5":
                         Console.Clear();
-                        Product.SellProduct(userProfile.UserID);
+                        Product.SellProduct(userProfile.ID);
                         break;
                     case "6":
                         Console.Clear();

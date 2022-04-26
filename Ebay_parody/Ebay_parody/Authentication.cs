@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Ebay_parody {
     class Authentication {
+        // Automātiski tiek izveidota poga, kura smuki atkarībā no teksta to uztaisa
         public static void CreateButtonList(string[] titles, bool serialNumbering = false) {
             for (int serialNumber = 0; serialNumber <= titles.Length - 1; serialNumber++) {
                 string buttonTitle;
@@ -26,6 +27,7 @@ namespace Ebay_parody {
             }
         }
 
+        // Slēp lietotāja vadīšanas laikā paroli
         private static string PasswordHider() {
             var pass = string.Empty;
 
@@ -46,6 +48,7 @@ namespace Ebay_parody {
             return pass;
         }
 
+        // Pieprasa lietotājam ievadīt datus lai tiktu iekšā
         public static int Login() {
             QueryBuilder user = new QueryBuilder("user");
             Authentication.CreateButtonList(new string[] { "Login" });
@@ -62,6 +65,7 @@ namespace Ebay_parody {
             return data[0][0];
         }
 
+        // Pieprasa lietotājam tikt iekšā
         public static void Register() {
             Authentication.CreateButtonList(new string[] { "Register" });
             QueryBuilder user = new QueryBuilder("user");
@@ -81,6 +85,7 @@ namespace Ebay_parody {
             //Console.WriteLine($"\nFirstname: {newUser.Firstname}\nLastame: {newUser.Lastname}\nEmail: {newUser.Email}"); //debug
         }
 
+        // Pirmais ceļš lai pārbaudītu vai lietotājs ir ievadijis korektus datus
         public static string Input(string authenticationType, string type, string[] parameters, List<List<dynamic>> emailData = null) {
             string error = "";
             string input = "";
@@ -114,9 +119,6 @@ namespace Ebay_parody {
                 }
             }
             Console.SetCursorPosition(0, Console.CursorTop + 3);
-            //if (input.IndexOf('.') != -1 && type == "Price") {
-            //    input = input.Replace('.', ',');
-            //}
             return input;
         }
 

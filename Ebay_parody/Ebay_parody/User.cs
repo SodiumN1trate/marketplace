@@ -14,7 +14,7 @@ namespace Ebay_parody {
         private decimal balance;
         private int productForSale; //CHANGE(list)
 
-        public int UserID {
+        public int ID {
             get { return id; }
             set { id = value; }
         }
@@ -45,6 +45,7 @@ namespace Ebay_parody {
         }
 
         QueryBuilder user = new QueryBuilder("user");
+        // Lietotājam izvada viņa profilu, kuru viņš var izmainit nospiežot vienu no pogām
         public void Profile() {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
@@ -93,6 +94,7 @@ namespace Ebay_parody {
             }
         }
 
+        // Lietotājam izvada viņa maciņu ar to cik naudas ir maciņā un ir iespēja to papildināt.
         public void Wallet() {
             bool isCursorCorrect = false;
             while (isCursorCorrect != true) {
@@ -115,6 +117,9 @@ namespace Ebay_parody {
                         isCursorCorrect = true;
                         Console.Clear();
                         break;
+                    default:
+                        Console.Clear();
+                        continue;
                 }
             }
         }
