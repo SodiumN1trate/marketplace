@@ -83,9 +83,15 @@ namespace Ebay_parody {
                 }
                 //MATCH(title, description) AGAINST('vertigo')
                 List<List<dynamic>> productToBuy = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"'{ buyID }'" } });
-                
+
                 try {
                     productBuy.ID = productToBuy[0][0];
+                    if (productToBuy[0][5] == 1) {
+                        Console.WriteLine($"Product with id - {buyID} does not exist");
+                        Console.ReadKey();
+                        Console.Clear();
+                        continue;
+                    }
                 } catch {
                     Console.WriteLine($"Product with id - {buyID} does not exist");
                     Console.ReadKey();
@@ -267,7 +273,7 @@ namespace Ebay_parody {
             list.Price = Convert.ToDecimal(Authentication.Input("default", "Price", new string[] { "required", "max-length:9", "decimal-exist" }));
             list.Stock = 1;/*Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));*/
 
-            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 1 });
+            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 0 });
             List<List<dynamic>> listData = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"{"LAST_INSERT_ID()"}" } });
             list.ID = listData[0][0];
             list.ListConfirmation();
