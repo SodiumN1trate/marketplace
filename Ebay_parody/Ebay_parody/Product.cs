@@ -48,6 +48,7 @@ namespace Ebay_parody {
         QueryBuilder user = new QueryBuilder("user");
 
         // Izvada menu ar 2 pogām(1. Izvadīs visus produktus, kuri pārdodas)
+        // zem switcha pieprasa no lietotāja kādu produktu vēlas iegādāties
         public static void ProductList(int userID, decimal userBalance) {
             QueryBuilder product = new QueryBuilder("product");
             Product productBuy = new Product();
@@ -106,6 +107,8 @@ namespace Ebay_parody {
             }
         }
 
+
+        // Lietotājs apstiprina vai atceļ produkta pasūtijumu
         private void ConfirmOrder(List<dynamic> productToBuy, int userID, decimal userBalance) {
             Authentication.CreateButtonList(new string[] { "Order" });
             
@@ -303,6 +306,7 @@ namespace Ebay_parody {
             }
         }
 
+        // izvada visu produktus ko pieslēgtais lietotājs ir nopircis
         public static void UserBoughtProducts(int userID) {
             
             QueryBuilder product = new QueryBuilder("product");
