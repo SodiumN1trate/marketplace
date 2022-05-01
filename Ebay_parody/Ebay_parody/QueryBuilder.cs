@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Ebay_parody {
@@ -15,6 +12,16 @@ namespace Ebay_parody {
             this.tableName = tableName;
             db = new Database();
         }
+        // QueryBuilder product = new QueryBuilder("product");
+        // QueryBuilder user = new QueryBuilder("user");
+
+        // SELECT List<List<dynamic>> userData = user.Select(new string[] { "id", "firstname", "lastname", "email", "balance" }, new dynamic[,] { { "id", $"'{ userId }'" } });
+
+        // product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 0 });
+
+        // UPDATE user.Update(new dynamic[,] { { "balance", userBalance } }, new dynamic[,] { { "id", userID } });
+
+        // DELETE product.Delete(new dynamic[,] { { "id", listData[0][0] } });
 
         /**
         * Izvelk ierakstus no datubāzes

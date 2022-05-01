@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using System.Text.RegularExpressions;
 
 namespace Ebay_parody {
@@ -167,9 +163,9 @@ namespace Ebay_parody {
         }
         // Izdzēš un uzliek kursoru uz lietotāja ievadīšanas vietas
         private static void Output() {
-            Console.Write("\r                                  ");
+            Console.Write("\r                                                                                                                      ");
             Console.SetCursorPosition(0, Console.CursorTop + 1);
-            Console.Write("\r                                  ");
+            Console.Write("\r                                                                                                                      ");
         }
     }
 }

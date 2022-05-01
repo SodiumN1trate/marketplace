@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using System.Text.RegularExpressions;
 
 namespace Ebay_parody {
     class Authentication {
@@ -65,7 +61,7 @@ namespace Ebay_parody {
             return data[0][0];
         }
 
-        // Pieprasa lietotājam tikt iekšā
+        // Pieprasa lietotājam ievadīt datus, lai reģistrētos
         public static void Register() {
             Authentication.CreateButtonList(new string[] { "Register" });
             QueryBuilder user = new QueryBuilder("user");

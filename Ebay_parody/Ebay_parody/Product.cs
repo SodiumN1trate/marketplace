@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace Ebay_parody {
     class Product {
@@ -48,7 +44,8 @@ namespace Ebay_parody {
         QueryBuilder user = new QueryBuilder("user");
 
         // Izvada menu ar 2 pogām(1. Izvadīs visus produktus, kuri pārdodas)
-        public static void ProductList(int userID, decimal userBalance) {
+        // zem switcha pieprasa no lietotāja kādu produktu vēlas iegādāties
+        public static void BuyListedProducts(User user) {
             QueryBuilder product = new QueryBuilder("product");
             Product productBuy = new Product();
             bool isCursorCorrect = false;
@@ -83,24 +80,34 @@ namespace Ebay_parody {
                 }
                 //MATCH(title, description) AGAINST('vertigo')
                 List<List<dynamic>> productToBuy = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"'{ buyID }'" } });
-                
+
                 try {
                     productBuy.ID = productToBuy[0][0];
+                    Console.WriteLine("try");
+                    if (productToBuy[0][6] == true) {
+                        Console.WriteLine($"Product with id - {buyID} does not exist1");
+                        Console.ReadKey();
+                        Console.Clear();
+                        continue;
+                    }
                 } catch {
-                    Console.WriteLine($"Product with id - {buyID} does not exist");
+                    Console.WriteLine($"Product with id - {buyID} does not exist2");
                     Console.ReadKey();
                     Console.Clear();
                     continue;
                 }
 
                 productBuy.ID = productToBuy[0][0];
+                productBuy.UserId = productToBuy[0][1];
 
-                productBuy.ConfirmOrder(productToBuy[0], userID, userBalance);
+                productBuy.ConfirmOrder(productToBuy[0], user);
                 Console.ReadKey();
             }
         }
 
-        private void ConfirmOrder(List<dynamic> productToBuy, int userID, decimal userBalance) {
+
+        // Lietotājs apstiprina vai atceļ produkta pasūtijumu
+        private void ConfirmOrder(List<dynamic> productToBuy, User userData) {
             Authentication.CreateButtonList(new string[] { "Order" });
             
             Console.ForegroundColor = ConsoleColor.Green;
@@ -112,14 +119,19 @@ namespace Ebay_parody {
             string confirmation = Console.ReadLine();
 
             if (confirmation == "1") {
-                if (userBalance - productToBuy[4] < 0) {
+                if (userData.Balance - productToBuy[4] < 0) {
                     Console.WriteLine("You don't have enough money to buy this product");
                     Console.ReadKey();
                     Console.Clear();
                 } else {
-                    userBalance = userBalance - productToBuy[4];
-                    product.Update(new dynamic[,] { { "user_id", userID }, { "is_bought", 1 } }, new dynamic[,] { { "id", this.id } });
-                    user.Update(new dynamic[,] { { "balance", userBalance } }, new dynamic[,] { { "id", userID } });
+                    List<List<dynamic>> Seller = user.Select(new string[] { "id", "balance" }, new dynamic[,] { { "id", $"'{ productToBuy[1] }'" } });
+                    userData.Balance = userData.Balance - productToBuy[4];
+                    Seller[0][1] = Seller[0][1] + productToBuy[4];
+
+                    product.Update(new dynamic[,] { { "user_id", userData.ID }, { "is_bought", 1 } }, new dynamic[,] { { "id", this.id } });
+                    user.Update(new dynamic[,] { { "balance", userData.Balance } }, new dynamic[,] { { "id", userData.ID } });
+                    user.Update(new dynamic[,] { { "balance", Seller[0][1] } }, new dynamic[,] { { "id", Seller[0][0] } });
+
                     Console.WriteLine($"You successfully ordered {productToBuy[2]}");
                     Console.ReadKey();
                     Console.Clear();
@@ -267,7 +279,7 @@ namespace Ebay_parody {
             list.Price = Convert.ToDecimal(Authentication.Input("default", "Price", new string[] { "required", "max-length:9", "decimal-exist" }));
             list.Stock = 1;/*Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));*/
 
-            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 1 });
+            product.Insert(new dynamic[] { 0, list.userId, list.title, list.Description, list.Price, list.Stock, 0 });
             List<List<dynamic>> listData = product.Select(new string[] { "*" }, new dynamic[,] { { "id", $"{"LAST_INSERT_ID()"}" } });
             list.ID = listData[0][0];
             list.ListConfirmation();
@@ -297,6 +309,7 @@ namespace Ebay_parody {
             }
         }
 
+        // izvada visu produktus ko pieslēgtais lietotājs ir nopircis
         public static void UserBoughtProducts(int userID) {
             
             QueryBuilder product = new QueryBuilder("product");
