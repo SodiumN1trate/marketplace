@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace Ebay_parody {
     class Product {
@@ -49,7 +45,7 @@ namespace Ebay_parody {
 
         // Izvada menu ar 2 pogām(1. Izvadīs visus produktus, kuri pārdodas)
         // zem switcha pieprasa no lietotāja kādu produktu vēlas iegādāties
-        public static void ProductList(int userID, decimal userBalance) {
+        public static void BuyListedProducts(User user) {
             QueryBuilder product = new QueryBuilder("product");
             Product productBuy = new Product();
             bool isCursorCorrect = false;
@@ -87,29 +83,31 @@ namespace Ebay_parody {
 
                 try {
                     productBuy.ID = productToBuy[0][0];
-                    if (productToBuy[0][5] == 1) {
-                        Console.WriteLine($"Product with id - {buyID} does not exist");
+                    Console.WriteLine("try");
+                    if (productToBuy[0][6] == true) {
+                        Console.WriteLine($"Product with id - {buyID} does not exist1");
                         Console.ReadKey();
                         Console.Clear();
                         continue;
                     }
                 } catch {
-                    Console.WriteLine($"Product with id - {buyID} does not exist");
+                    Console.WriteLine($"Product with id - {buyID} does not exist2");
                     Console.ReadKey();
                     Console.Clear();
                     continue;
                 }
 
                 productBuy.ID = productToBuy[0][0];
+                productBuy.UserId = productToBuy[0][1];
 
-                productBuy.ConfirmOrder(productToBuy[0], userID, userBalance);
+                productBuy.ConfirmOrder(productToBuy[0], user);
                 Console.ReadKey();
             }
         }
 
 
         // Lietotājs apstiprina vai atceļ produkta pasūtijumu
-        private void ConfirmOrder(List<dynamic> productToBuy, int userID, decimal userBalance) {
+        private void ConfirmOrder(List<dynamic> productToBuy, User userData) {
             Authentication.CreateButtonList(new string[] { "Order" });
             
             Console.ForegroundColor = ConsoleColor.Green;
@@ -121,14 +119,19 @@ namespace Ebay_parody {
             string confirmation = Console.ReadLine();
 
             if (confirmation == "1") {
-                if (userBalance - productToBuy[4] < 0) {
+                if (userData.Balance - productToBuy[4] < 0) {
                     Console.WriteLine("You don't have enough money to buy this product");
                     Console.ReadKey();
                     Console.Clear();
                 } else {
-                    userBalance = userBalance - productToBuy[4];
-                    product.Update(new dynamic[,] { { "user_id", userID }, { "is_bought", 1 } }, new dynamic[,] { { "id", this.id } });
-                    user.Update(new dynamic[,] { { "balance", userBalance } }, new dynamic[,] { { "id", userID } });
+                    List<List<dynamic>> Seller = user.Select(new string[] { "id", "balance" }, new dynamic[,] { { "id", $"'{ productToBuy[1] }'" } });
+                    userData.Balance = userData.Balance - productToBuy[4];
+                    Seller[0][1] = Seller[0][1] + productToBuy[4];
+
+                    product.Update(new dynamic[,] { { "user_id", userData.ID }, { "is_bought", 1 } }, new dynamic[,] { { "id", this.id } });
+                    user.Update(new dynamic[,] { { "balance", userData.Balance } }, new dynamic[,] { { "id", userData.ID } });
+                    user.Update(new dynamic[,] { { "balance", Seller[0][1] } }, new dynamic[,] { { "id", Seller[0][0] } });
+
                     Console.WriteLine($"You successfully ordered {productToBuy[2]}");
                     Console.ReadKey();
                     Console.Clear();

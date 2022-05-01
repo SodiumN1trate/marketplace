@@ -83,7 +83,7 @@ namespace Ebay_parody {
             isCursorCorrect = false;
 
             while (isCursorCorrect != true) {
-                string[] titles = { "Profile", "Wallet", "Explore products", "Buy product", "List your product", "Exit" };
+                string[] titles = { "Profile", "Wallet", "Explore products", "Product history", "List your product", "Exit" };
                 Authentication.CreateButtonList(titles, true);
                 Console.Write("Choose main menu button: ");
                 string cursor = Console.ReadLine();
@@ -99,7 +99,7 @@ namespace Ebay_parody {
                         break;
                     case "3":
                         Console.Clear();
-                        Product.ProductList(userProfile.ID, userProfile.Balance);
+                        Product.BuyListedProducts(userProfile);
                         break;
                     case "4":
                         Console.Clear();
