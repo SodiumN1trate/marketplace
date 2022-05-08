@@ -144,14 +144,14 @@ namespace Ebay_parody {
         }
 
         // Izvada visus produktus vai tikai tos ko pieprasa lietotājs(Savus nopirktos produktus)
-        private static void ListAllProducts(bool is_bought = false, int userID = -1) {
+        private static void ListAllProducts(bool is_bought = false, int userID = -1, string email = null) {
             QueryBuilder product = new QueryBuilder("product");
             List<List<dynamic>> listData;
             Authentication.CreateButtonList(new string[] { "Products" });
-            if (is_bought == false) {
-                listData = product.Select(new string[] { "*" });
+            if (is_bought) {
+                listData = product.Select(new string[] { "*" }, new dynamic[,] { { "user_id", $"'{ userID }'" } });  
             } else {
-                listData = product.Select(new string[] { "*" }, new dynamic[,] { { "user_id", $"'{ userID }'" } });
+                listData = product.Select(new string[] { "*" });
             }
             
             bool isRow = true;
@@ -184,7 +184,7 @@ namespace Ebay_parody {
             listFormating += string.Format("{0,0}", "+--------+-----------+----------+------------------------------------------------------------------------------------+\n");
             listFormating += string.Format("{0,0} {1,-6} {2,0} {3,-9} {4,0} {5,-8} {6,0} {7,-82} {8, 0}", "|", $"{TextAlign("ID", 6)}", "|", $"{TextAlign("PRICE", 9)}", "|", $"{TextAlign("In stock", 8)}", "|", $"{lines[0]}", "|\n");
             listFormating += string.Format("{0,0} {1,-82} {2,0}", "+--------+-----------+----------+", lines[1],"|\n");
-            listFormating += string.Format("{0,0} {1,-6} {2,0} {3,-9} {4,0} {5,-8} {6,0} {7,-82} {8, 0}", "|", $"{TextAlign(Convert.ToString(listData[0]), 6)}", "|", $"{TextAlign(Convert.ToString(listData[4]),9)}", "|", $"{TextAlign(Convert.ToString(listData[5]), 8)}", "|", lines[2], "|\n");
+            listFormating += string.Format("{0,0} {1,-6} {2,0} {3,-9} {4,0} {5,-8} {6,0} {7,-82} {8, 0}", "|", $"{TextAlign(Convert.ToString(listData[0]), 6)}", "|", $"{TextAlign(Convert.ToString(listData[4]), 9)}", "|", $"{TextAlign(Convert.ToString(listData[5]), 8)}", "|", lines[2], "|\n");
             listFormating += string.Format("{0,0}", "+--------+-----------+----------+------------------------------------------------------------------------------------+\n");
             Console.WriteLine(listFormating);
         }
@@ -275,7 +275,7 @@ namespace Ebay_parody {
             Authentication.CreateButtonList(new string[] { "List your product" });
             list.UserId = userId;
             list.Title = Authentication.Input("default", "Title", new string[] { "required", "min-length:5", "max-length:29" });
-            list.Description = Authentication.Input("default", "Description", new string[] { "required", "max-length:255" });
+            list.Description = Authentication.Input("default", "Description(Enter email please)", new string[] { "required", "max-length:255" });
             list.Price = Convert.ToDecimal(Authentication.Input("default", "Price", new string[] { "required", "max-length:9", "decimal-exist" }));
             list.Stock = 1;/*Convert.ToInt32(Authentication.Input("default", "In stock", new string[] { "required", "min-length:1", "max-length:8", "int-exist" }));*/
 
@@ -310,16 +310,15 @@ namespace Ebay_parody {
         }
 
         // izvada visu produktus ko pieslēgtais lietotājs ir nopircis
-        public static void UserBoughtProducts(int userID) {
+        public static void UserBoughtProducts(User user) {
             
             QueryBuilder product = new QueryBuilder("product");
 
             Authentication.CreateButtonList(new string[] { "Your bought products" });
             
-            ListAllProducts(true, userID);
+            ListAllProducts(true, user.ID);
             Console.ReadKey();
             Console.Clear();
         }
-
     }
 }
