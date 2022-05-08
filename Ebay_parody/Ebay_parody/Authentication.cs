@@ -117,6 +117,5 @@ namespace Ebay_parody {
             Console.SetCursorPosition(0, Console.CursorTop + 3);
             return input;
         }
-
     }
 }
